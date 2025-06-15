@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "http://udaykiranch2.github.io/chat-bot",
+  "homepage": "http://udaykiranch2.github.io/chat-bot/",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
