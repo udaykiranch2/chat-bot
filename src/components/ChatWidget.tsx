@@ -2,18 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import chatBotIcon from '../assets/chat-bot.png';
 import sendIcon from '../assets/sent.png';
 import ChatMessage from './ChatMessage';
-import { getInitialPrompt, BOT_PERSONALITY } from '../config/botPersonality';
-
-interface Message {
-    text: string;
-    isUser: boolean;
-}
+import type { Message } from '../services/apiService';
+import { initializeBotWithGreeting, sendMessage } from '../services/apiService';
 
 const ChatWidget: React.FC = () => {
     const [open, setOpen] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([
-        { text: "Hi! How can I help you today?", isUser: false }
-    ]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [inputMessage, setInputMessage] = useState('');
     const [loading, setLoading] = useState(false);
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -24,29 +18,23 @@ const ChatWidget: React.FC = () => {
     };
 
     useEffect(() => {
-        const initializeBot = async () => {
+        const initBot = async () => {
             if (open && !isInitialized.current) {
                 try {
-                    const response = await fetch(import.meta.env.VITE_GEMINI_API_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                        },
-                        body: JSON.stringify(getInitialPrompt()),
-                    });
-
-                    if (!response.ok) {
-                        console.error('Failed to initialize bot personality');
-                    }
+                    setLoading(true);
+                    const greeting = await initializeBotWithGreeting();
+                    setMessages([{ text: greeting, isUser: false }]);
                     isInitialized.current = true;
                 } catch (error) {
                     console.error('Error initializing bot:', error);
+                    setMessages([{ text: "Sir Sarcastic appears to be too unimpressed to start. Try again.", isUser: false }]);
+                } finally {
+                    setLoading(false);
                 }
             }
         };
 
-        initializeBot();
+        initBot();
     }, [open]);
 
     useEffect(() => {
@@ -63,62 +51,7 @@ const ChatWidget: React.FC = () => {
         setLoading(true);
 
         try {
-            console.log('Sending request to:', import.meta.env.VITE_GEMINI_API_URL);
-
-            const response = await fetch(import.meta.env.VITE_GEMINI_API_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    contents: [
-                        {
-                            role: "user",
-                            parts: [{
-                                text: BOT_PERSONALITY
-                            }]
-                        },
-                        {
-                            role: "model",
-                            parts: [{
-                                text: "Understood. I will maintain this personality throughout our conversation."
-                            }]
-                        },
-                        {
-                            role: "user",
-                            parts: [{
-                                text: userMessage
-                            }]
-                        }
-                    ]
-                }),
-            });
-
-            console.log('Response status:', response.status);
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('API Error Response:', errorText);
-                throw new Error(`API Error: ${response.status} - ${errorText}`);
-            }
-
-            const data = await response.json();
-            console.log('API Response:', data);
-
-            // Handle different possible response structures
-            let botResponse: string;
-            if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-                botResponse = data.candidates[0].content.parts[0].text;
-            } else if (data?.text) {
-                botResponse = data.text;
-            } else if (typeof data === 'string') {
-                botResponse = data;
-            } else {
-                console.error('Unexpected API response structure:', data);
-                botResponse = "Sorry, I received an unexpected response format.";
-            }
-
+            const botResponse = await sendMessage(userMessage);
             setMessages(prev => [...prev, {
                 text: botResponse,
                 isUser: false
