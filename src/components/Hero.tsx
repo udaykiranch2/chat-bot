@@ -14,11 +14,11 @@ const Hero: React.FC = () => {
                     draggable={false}
                 />
                 <h1 className="text-5xl md:text-7xl font-extrabold mb-4" style={{ color: 'var(--color-text-dark)' }}>
-                     Sir Sarcasm
+                    Sir Sarcasm
                 </h1>
                 <p className="text-xl md:text-2xl max-w-2xl" style={{ color: 'var(--color-text)' }}>
-                    The next evolution in AI conversation.<br />
-                    <span style={{ color: 'var(--color-accent)' }}>Futuristic. Intelligent. Human-like.</span>
+                    Meet Sir Sarcasm, your AI companion who's<br />
+                    <span style={{ color: 'var(--color-accent)' }}>Witty. Sarcastic. Unimpressed.</span>
                 </p>
             </div>
         </div>
