@@ -86,3 +86,13 @@ This project is configured for easy deployment to GitHub Pages.
       "predeploy": "npm run build",
       "deploy": "gh-pages -d dist"
     }
+
+---
+
+## Contribution
+
+Feel free to explore, fork, and contribute. Pull requests are welcome!
+
+---
+
+If you found "Sir Sarcastic" amusing or helpful, please consider giving the repository a star!
