@@ -1,5 +1,4 @@
 import { BOT_PERSONALITY } from '../config/botPersonality';
-import { getInitialPrompt } from '../config/botPersonality';
 
 export interface Message {
     text: string;
