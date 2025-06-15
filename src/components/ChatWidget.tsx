@@ -83,7 +83,7 @@ const ChatWidget: React.FC = () => {
 
             {/* Chat Dialog */}
             {open && (
-                <div className="fixed top-16 sm:top-auto sm:bottom-24 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-8 z-50 w-[95%] sm:w-[450px] h-[80vh] sm:h-[600px] max-w-full rounded-2xl shadow-lg flex flex-col pt-4"
+                <div className="fixed top-16 sm:top-auto sm:bottom-22 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-8 z-50 w-[95%] sm:w-[450px] h-[80vh] sm:h-[600px] max-w-full rounded-2xl shadow-lg flex flex-col pt-4"
                     style={{
                         backgroundColor: 'var(--color-bg)',
                         border: '1px solid var(--color-border)'
