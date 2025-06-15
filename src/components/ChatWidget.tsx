@@ -102,6 +102,9 @@ const ChatWidget: React.FC = () => {
                     <div className="flex-grow overflow-y-auto p-2 sm:p-4" style={{
                         padding: '0.25rem',
                         scrollbarWidth: 'thin',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.50rem',
                     }}>
                         <style>
                             {`
