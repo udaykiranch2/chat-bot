@@ -144,30 +144,30 @@ const ChatWidget: React.FC = () => {
             <img
                 src={chatBotIcon}
                 alt="Chat Bot"
-                className="fixed bottom-6 right-6 z-50 w-12 h-12 cursor-pointer"
+                className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-8 h-8 sm:w-12 sm:h-12 cursor-pointer"
                 onClick={() => setOpen(!open)}
             />
 
             {/* Chat Dialog */}
             {open && (
-                <div className="fixed bottom-24 right-8 z-50 w-96 h-[600px] max-w-full rounded-2xl shadow-lg flex flex-col"
+                <div className="fixed top-16 sm:top-auto sm:bottom-24 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-8 z-50 w-[95%] sm:w-[450px] h-[80vh] sm:h-[600px] max-w-full rounded-2xl shadow-lg flex flex-col"
                     style={{
                         backgroundColor: 'var(--color-bg)',
                         border: '1px solid var(--color-border)'
                     }}>
-                    <div className="flex items-center justify-between p-4"
+                    <div className="flex items-center justify-between p-2 sm:p-4"
                         style={{ borderBottom: '1px solid var(--color-border-light)' }}>
-                        <div className="flex items-center gap-2">
-                            <span className="inline-flex items-center justify-center w-9 h-9 rounded-full">
-                                <img src={chatBotIcon} alt="Chat Bot" className="w-6 h-6 rounded-full" />
+                        <div className="flex items-center gap-1">
+                            <span className="inline-flex items-center justify-center w-7 h-7 sm:w-9 sm:h-9 rounded-full">
+                                <img src={chatBotIcon} alt="Chat Bot" className="w-4 h-4 sm:w-6 sm:h-6 rounded-full" />
                             </span>
-                            <span className="font-semibold" style={{ color: 'var(--color-text)' }}>Chat with Mr. Bot</span>
+                            <span className="font-semibold text-xs sm:text-base" style={{ color: 'var(--color-text)' }}>Chat with Sir Sarcasm</span>
                         </div>
                     </div>
 
                     {/* Messages Container */}
-                    <div className="flex-grow overflow-y-auto p-4" style={{
-                        padding: '0.5rem',
+                    <div className="flex-grow overflow-y-auto p-2 sm:p-4" style={{
+                        padding: '0.25rem',
                         scrollbarWidth: 'thin',
                     }}>
                         <style>
@@ -175,54 +175,63 @@ const ChatWidget: React.FC = () => {
                                 .flex-grow::-webkit-scrollbar {
                                     width: 4px;
                                 }
-                              
                                 .flex-grow::-webkit-scrollbar-thumb {
                                     background-color: rgba(128, 128, 128, 0.3);
                                     border-radius: 20px;
                                 }
+                                .chat-message {
+                                    margin-bottom: 0.5rem sm:mb-4;
+                                }
                             `}
                         </style>
                         {messages.map((message, index) => (
-                            <ChatMessage
-                                key={index}
-                                message={message.text}
-                                isUser={message.isUser}
-                            />
+                            <div key={index} className="chat-message">
+                                <ChatMessage
+                                    message={message.text}
+                                    isUser={message.isUser}
+                                />
+                            </div>
                         ))}
-                        {loading && <ChatMessage message="Mr. Bot is typing..." isUser={false} />}
+                        {loading && (
+                            <div className="chat-message">
+                                <ChatMessage message="processing ..." isUser={false} />
+                            </div>
+                        )}
                         <div ref={messagesEndRef} />
                     </div>
 
                     {/* Input Form */}
-                    <div className='px-4 pb-12'>
-                        <form onSubmit={handleSendMessage} className="w-full px-4 pb-4" style={{ borderColor: 'var(--color-border-light)' }}>
+                    <div className='px-3 sm:px-4 pb-4 sm:pb-8'>
+                        <form onSubmit={handleSendMessage} className="w-full px-3 sm:px-4 pb-2 sm:pb-4" style={{ borderColor: 'var(--color-border-light)' }}>
                             <div className="flex items-center border rounded-full overflow-hidden"
                                 style={{
                                     borderColor: 'var(--color-border)',
-                                    borderRadius: '9999px'
+                                    borderRadius: '9999px',
+                                    minHeight: '2.5rem'
                                 }}>
                                 <input
                                     type="text"
                                     value={inputMessage}
                                     onChange={(e) => setInputMessage(e.target.value)}
                                     placeholder="Type your message..."
-                                    className="flex-grow bg-transparent focus:outline-none text-sm"
+                                    className="flex-grow bg-transparent focus:outline-none text-sm sm:text-base"
                                     style={{
                                         color: 'var(--color-text)',
-                                        padding: '0.75rem 0.5rem 0.75rem 1rem',
+                                        padding: '0.75rem 0.75rem 0.75rem 1rem',
                                         textOverflow: 'ellipsis',
                                         whiteSpace: 'nowrap',
                                         overflow: 'hidden',
                                         fontFamily: 'inherit',
-                                        lineHeight: '1.5'
+                                        lineHeight: '1.5',
+                                        minHeight: '2.5rem'
                                     }}
                                 />
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-8 h-8 flex items-center justify-center rounded-full transition-colors focus:outline-none"
+                                    className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full transition-colors focus:outline-none mx-1"
                                 >
-                                    <img src={sendIcon} alt="Send" className="w-4 h-4" />
+                                    <img src={sendIcon} alt="Send" className="w-4 h-4 sm:w-5 sm:h-5" />
                                 </button>
                             </div>
                         </form>
