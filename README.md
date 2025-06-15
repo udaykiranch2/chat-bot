@@ -29,7 +29,7 @@ To get Sir Sarcastic up and running locally, follow these steps:
 1.  **Clone the repository:**
 
     ```bash
-    git clone [https://github.com/udaykiranch2/chat-bot.git](https://github.com/udaykiranch2/chat-bot.git)
+    git clone https://github.com/udaykiranch2/chat-bot.git
     cd chat-bot
     ```
 
