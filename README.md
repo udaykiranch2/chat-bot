@@ -29,7 +29,7 @@ To get Sir Sarcastic up and running locally, follow these steps:
 1.  **Clone the repository:**
 
     ```bash
-    git clone [https://github.com/udaykiranch2/chat-bot.git](https://github.com/udaykiranch2/chat-bot.git)
+    git clone https://github.com/udaykiranch2/chat-bot.git
     cd chat-bot
     ```
 
@@ -78,6 +78,7 @@ This project is configured for easy deployment to GitHub Pages.
     Ensure your `package.json` includes the following scripts:
 
     ```json
+    "home": "https://GITHUB_USER_NAME.github.io/REPO_NAME/"
     "scripts": {
       "dev": "vite",
       "build": "tsc -b && vite build",
@@ -86,7 +87,7 @@ This project is configured for easy deployment to GitHub Pages.
       "predeploy": "npm run build",
       "deploy": "gh-pages -d dist"
     }
-
+ * Replace `GITHUB_USER_NAME` with your actual github user name and `REPO_NAME` with your repository name.
 ---
 
 ## Contribution
