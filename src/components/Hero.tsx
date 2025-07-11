@@ -3,7 +3,7 @@ import mascot from '../assets/mascot.png';
 
 const Hero: React.FC = () => {
     return (
-        <div className="fixed inset-0 w-full h-full flex items-center justify-center" style={{ backgroundColor: 'var(--color-primary)' }}>
+        <div className="min-h-screen w-full flex items-center justify-center pt-16" style={{ backgroundColor: 'var(--color-primary)' }}>
             <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
                 {/* Mascot Image */}
                 <img
