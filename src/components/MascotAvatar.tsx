@@ -21,7 +21,7 @@ const MascotAvatar: React.FC<MascotAvatarProps> = ({ size = 'md' }) => {
     >
       <svg viewBox="0 0 100 100" width={s} height={s}>
         {/* Face background */}
-        <circle cx="50" cy="48" r="42" fill="var(--color-surface)" />
+        <circle cx="50" cy="48" r="42" fill="currentColor" className="text-card" />
 
         {/* Monocle frame */}
         <circle
@@ -29,40 +29,53 @@ const MascotAvatar: React.FC<MascotAvatarProps> = ({ size = 'md' }) => {
           cy="38"
           r="21"
           fill="none"
-          stroke="var(--color-accent)"
-          strokeWidth="2.5"
+          stroke="currentColor"
+          className="text-primary"
+          strokeWidth="3.5"
         />
-
         {/* Monocle glass tint */}
-        <circle cx="52" cy="38" r="19" fill="var(--color-accent)" opacity="0.05" />
+        <circle
+          cx="52"
+          cy="38"
+          r="19"
+          fill="currentColor"
+          className="text-muted"
+          opacity="0.5"
+        />
 
         {/* Monocle chain */}
         <motion.path
-          d="M 73 38 Q 79 52 75 68 Q 71 80 77 94"
+          d="M 73 38 Q 79 52 75 68"
           fill="none"
-          stroke="var(--color-accent)"
-          strokeWidth="1.5"
+          stroke="currentColor"
+          className="text-primary"
+          strokeWidth="2"
           strokeLinecap="round"
           animate={{
             d: [
-              'M 73 38 Q 79 52 75 68 Q 71 80 77 94',
-              'M 73 38 Q 81 54 77 70 Q 73 82 79 96',
-              'M 73 38 Q 79 52 75 68 Q 71 80 77 94',
+              'M 73 38 Q 79 52 75 68',
+              'M 73 38 Q 77 54 73 68',
+              'M 73 38 Q 79 52 75 68',
             ],
           }}
-          transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
+          transition={{
+            repeat: Infinity,
+            duration: 3.5,
+            ease: 'easeInOut',
+          }}
         />
 
         {/* Eye white */}
-        <ellipse cx="52" cy="38" rx="13" ry="9" fill="white" />
+        <circle cx="52" cy="38" r="13" fill="white" />
 
-        {/* Iris — drifts around condescendingly */}
+        {/* Iris drift */}
         <motion.ellipse
           cx={52}
           cy={40}
           rx={5.5}
           ry={6.5}
-          fill="var(--color-text)"
+          fill="currentColor"
+          className="text-foreground"
           animate={{
             cx: [52, 54, 50, 53, 51, 52],
             cy: [40, 39, 41, 40, 42, 40],
@@ -81,7 +94,8 @@ const MascotAvatar: React.FC<MascotAvatarProps> = ({ size = 'md' }) => {
         <motion.path
           d="M 28 22 Q 40 12 52 16 Q 64 12 76 22"
           fill="none"
-          stroke="var(--color-text)"
+          stroke="currentColor"
+          className="text-foreground"
           strokeWidth="3"
           strokeLinecap="round"
           animate={{
@@ -103,7 +117,8 @@ const MascotAvatar: React.FC<MascotAvatarProps> = ({ size = 'md' }) => {
         <path
           d="M 38 64 Q 48 71 63 62"
           fill="none"
-          stroke="var(--color-text)"
+          stroke="currentColor"
+          className="text-foreground"
           strokeWidth="2.5"
           strokeLinecap="round"
           opacity="0.65"
@@ -120,7 +135,7 @@ const MascotAvatar: React.FC<MascotAvatarProps> = ({ size = 'md' }) => {
         />
 
         {/* Subtle lower shadow */}
-        <ellipse cx="50" cy="90" rx="20" ry="3" fill="var(--color-text)" opacity="0.04" />
+        <ellipse cx="50" cy="90" rx="20" ry="3" fill="currentColor" className="text-foreground" opacity="0.04" />
       </svg>
     </motion.div>
   );

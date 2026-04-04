@@ -1,8 +1,7 @@
-import './App.css'
-import './styles/theme.css'
-import { ThemeProvider } from './contexts/ThemeContext'
-import { ConversationProvider } from './contexts/ConversationContext'
-import ChatLayout from './components/ChatLayout'
+import './styles/globals.css';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import { ConversationProvider } from '@/contexts/ConversationContext';
+import ChatLayout from '@/components/ChatLayout';
 
 function App() {
   return (
@@ -14,4 +13,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

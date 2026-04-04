@@ -6,8 +6,17 @@ export interface Message {
 }
 
 export interface ConversationTurn {
-  role: "user" | "model";
+  role: 'user' | 'model';
   parts: { text: string }[];
 }
 
-export type Theme = "light" | "dark";
+export type Theme = 'light' | 'dark';
+
+export interface Conversation {
+  id: string;
+  title: string;
+  messages: Message[];
+  history: ConversationTurn[];
+  createdAt: number;
+  updatedAt: number;
+}

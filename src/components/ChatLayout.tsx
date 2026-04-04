@@ -1,21 +1,22 @@
-import Sidebar from './Sidebar';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { AppSidebar } from './AppSidebar';
 import ChatHeader from './ChatHeader';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 
 const ChatLayout: React.FC = () => {
   return (
-    <div
-      className="relative h-full w-full bg-[var(--color-bg)]"
-      style={{ transition: 'var(--transition-theme)' }}
-    >
-      <Sidebar />
-      <main className="h-full w-full flex flex-col min-w-0 min-h-0 md:pl-[260px]">
-        <ChatHeader />
-        <MessageList />
-        <MessageInput />
-      </main>
-    </div>
+    <TooltipProvider>
+      <SidebarProvider className="h-dvh">
+        <AppSidebar />
+        <SidebarInset className="h-dvh overflow-hidden">
+          <ChatHeader />
+          <MessageList />
+          <MessageInput />
+        </SidebarInset>
+      </SidebarProvider>
+    </TooltipProvider>
   );
 };
 

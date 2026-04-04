@@ -1,18 +1,20 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sun, Moon } from 'lucide-react';
-import { useTheme } from '../contexts/ThemeContext';
+import { Button } from '@/components/ui/button';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const ThemeToggle: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
 
   return (
-    <button
+    <Button
+      variant="ghost"
+      size="icon-sm"
       onClick={toggleTheme}
       role="switch"
       aria-checked={isDark}
-      aria-label="Dark mode"
-      className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-[var(--color-surface)] hover:bg-[var(--color-surface-hover)] border border-[var(--color-border)] focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:outline-none transition-colors cursor-pointer"
+      aria-label="Toggle dark mode"
     >
       <AnimatePresence mode="wait">
         {isDark ? (
@@ -23,7 +25,7 @@ const ThemeToggle: React.FC = () => {
             exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
             transition={{ duration: 0.2 }}
           >
-            <Moon size={17} className="text-[var(--color-accent)]" />
+            <Moon size={17} className="text-primary" />
           </motion.div>
         ) : (
           <motion.div
@@ -33,11 +35,11 @@ const ThemeToggle: React.FC = () => {
             exit={{ rotate: -90, opacity: 0, scale: 0.5 }}
             transition={{ duration: 0.2 }}
           >
-            <Sun size={17} className="text-[var(--color-accent)]" />
+            <Sun size={17} className="text-primary" />
           </motion.div>
         )}
       </AnimatePresence>
-    </button>
+    </Button>
   );
 };
 

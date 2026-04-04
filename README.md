@@ -8,7 +8,7 @@ A minimalist, dry-witted chatbot, built to respond with a touch of cynical charm
 
 * **Sarcastic Personality:** Experience AI interaction with a unique, dry, and often dismissive tone. Sir Sarcastic is always ready with a witty retort or a subtle eye-roll.
 * **Minimalist Interface:** A clean and straightforward chat interface, ensuring the focus remains on Sir Sarcastic's delightful cynicism.
-* **Gemini API Powered:** Leverages the robust capabilities of the Google Gemini API for its conversational prowess.
+* **Dual Provider Support:** Run with a local LLM via Ollama (LLaMA 3) for fully offline use, or connect to the Gemini cloud API.
 * **Modern Stack:** Built with **React** for a responsive UI, **TypeScript** for robust code, and styled with **Tailwind CSS** for a sleek, utility-first design.
 
 ---
@@ -18,7 +18,8 @@ A minimalist, dry-witted chatbot, built to respond with a touch of cynical charm
 * **React:** Frontend library for building user interfaces.
 * **TypeScript:** Superset of JavaScript for type-safe development.
 * **Tailwind CSS:** Utility-first CSS framework for rapid styling.
-* **Google Gemini API:** Powers the conversational AI capabilities.
+* **Ollama:** Serves LLaMA 3 locally as an OpenAI-compatible API.
+* **Google Gemini API:** Cloud-based alternative for the LLM backend.
 
 ---
 
@@ -41,14 +42,37 @@ To get Sir Sarcastic up and running locally, follow these steps:
     yarn install
     ```
 
-3.  **Configure Gemini API Key:**
-    * Create a `.env` file in the root of your project.
-    * Add your Gemini API key:
+3.  **Configure your LLM provider** — choose one:
+
+    **Option A: Local LLM (Ollama + LLaMA 3)** — no API keys needed, fully offline
+
+    * Install Ollama from [ollama.com](https://ollama.com)
+    * Pull the LLaMA 3 model:
+
+        ```bash
+        ollama pull llama3
+        ```
+
+    * Start the Ollama server:
+
+        ```bash
+        ollama serve
+        ```
+
+    * Verify it's running at `http://localhost:11434` — you should see "Ollama is running".
+    * **No `.env` configuration needed.** The app auto-detects and uses Ollama when `VITE_API_URL` is not set.
+
+    **Option B: Gemini Cloud API**
+
+    * Create a `.env` file in the project root:
 
         ```
-        VITE_GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE
+        VITE_API_URL=YOUR_GEMINI_API_URL
+        VITE_API_KEY=YOUR_GEMINI_API_KEY
         ```
-    * Replace `YOUR_GEMINI_API_KEY_HERE` with your actual Gemini API Key.
+
+    * Replace with your actual Gemini API URL and key.
+    * When `VITE_API_URL` is set, the app uses the Gemini cloud API instead of Ollama.
 
 4.  **Run the development server:**
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import type { Message } from '../types';
+import type { Message } from '@/types';
 
 interface ChatMessageProps {
   message: Message;
@@ -23,15 +23,15 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         <div
           className={`px-5 py-3 text-[15px] leading-relaxed ${
             message.isUser
-              ? 'bg-[var(--color-accent)] text-[var(--color-text-on-accent)] rounded-2xl rounded-br-md'
-              : 'bg-[var(--color-surface)] text-[var(--color-text)] rounded-2xl rounded-bl-md shadow-[var(--shadow-sm)] border-l-2 border-l-[var(--color-accent)]'
+              ? 'bg-primary text-primary-foreground rounded-2xl rounded-br-md'
+              : 'bg-card text-card-foreground rounded-2xl rounded-bl-md shadow-sm border-l-2 border-l-primary'
           }`}
         >
           {message.text}
         </div>
         <time
           dateTime={new Date(message.timestamp).toISOString()}
-          className={`block text-[11px] mt-2 text-[var(--color-text-muted)] ${
+          className={`block text-[11px] mt-2 text-muted-foreground ${
             message.isUser ? 'text-right pr-2' : 'text-left pl-2'
           }`}
         >
