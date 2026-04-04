@@ -1,131 +1,120 @@
-import { BOT_PERSONALITY } from '../config/botPersonality';
+import { BOT_PERSONALITY } from '@/config/botPersonality';
+import type { ConversationTurn } from '@/types';
 
-export interface Message {
-    text: string;
-    isUser: boolean;
+// Supports both Gemini and GLM response structures
+interface UnifiedApiResponse {
+    // Gemini path
+    candidates?: { content: { parts: { text: string }[] } }[];
+    // GLM path
+    choices?: { message: { content: string } }[];
+    error?: any;
 }
 
 const cleanResponse = (text: string): string => {
-    // Only remove markdown formatting when it's used for formatting
     return text
-        // Remove asterisks only when they're used for emphasis (paired)
-        .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
-        .replace(/\*(.*?)\*/g, '$1')     // Remove italic
-        // Remove underscores only when they're used for emphasis (paired)
-        .replace(/__(.*?)__/g, '$1')     // Remove bold with underscores
-        .replace(/_(.*?)_/g, '$1')       // Remove italic with underscores
-        // Remove backticks only when they're used for code blocks
-        .replace(/```(.*?)```/g, '$1')   // Remove code blocks
-        .replace(/`(.*?)`/g, '$1')       // Remove inline code
-        // Remove hash symbols only when they're used for headings
-        .replace(/^#+\s+(.*?)$/gm, '$1') // Remove heading markers
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/\*(.*?)\*/g, '$1')
+        .replace(/__(.*?)__/g, '$1')
+        .replace(/_(.*?)_/g, '$1')
+        .replace(/`{1,3}[^`\n]*`/g, '$&')
+        .replace(/^#+\s/gm, '')
         .trim();
 };
 
-export const initializeBotWithGreeting = async (): Promise<string> => {
-    try {
-        const response = await fetch(import.meta.env.VITE_GEMINI_API_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
-                contents: [
-                    {
-                        role: "user",
-                        parts: [{
-                            text: BOT_PERSONALITY
-                        }]
-                    },
-                    {
-                        role: "model",
-                        parts: [{
-                            text: "Understood. I will maintain this personality throughout our conversation."
-                        }]
-                    },
-                    {
-                        role: "user",
-                        parts: [{
-                            text: "Now, as Sir Sarcastic, generate a single, very short, dryly sarcastic and unimpressed greeting to initiate a conversation with a user. Do not introduce yourself, just the greeting. Keep it under 15 words. Do not use any markdown formatting like asterisks or underscores."
-                        }]
-                    }
-                ]
-            }),
-        });
+const extractText = (data: UnifiedApiResponse): string => {
+    if (data.error) {
+        const msg = data.error.message || data.error.error?.message || 'API Error';
+        throw new Error(msg);
+    }
+    // Try GLM path first, then Gemini path
+    const text = data?.choices?.[0]?.message?.content || data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) throw new Error('No text content in API response');
+    return text.trim();
+};
 
-        if (!response.ok) {
-            throw new Error('Failed to initialize bot');
-        }
+const getProviderConfig = () => {
+    const url = import.meta.env.VITE_API_URL; // Generic URL in .env
+    const key = import.meta.env.VITE_API_KEY;
+    if (!url) throw new Error('VITE_API_URL is not configured');
 
-        const data = await response.json();
+    const isGlm = url.includes('zhipuai') || url.includes('glm');
+    return { url, key, isGlm };
+};
 
-        let responseText = '';
-        if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-            responseText = data.candidates[0].content.parts[0].text;
-        } else if (data?.text) {
-            responseText = data.text;
-        } else if (typeof data === 'string') {
-            responseText = data;
-        } else {
-            throw new Error('Unexpected API response format');
-        }
-
-        return cleanResponse(responseText);
-    } catch (error) {
-        console.error('Error initializing bot:', error);
-        return "Sir Sarcastic appears to be too unimpressed to start. Try again.";
+// Formats history based on the provider requirements
+const formatPayload = (isGlm: boolean, history: ConversationTurn[]) => {
+    if (isGlm) {
+        return {
+            model: "glm-4",
+            messages: history.map(h => ({
+                role: h.role === 'model' ? 'assistant' : h.role,
+                content: h.parts[0].text
+            }))
+        };
+    } else {
+        return {
+            contents: history.map(h => ({
+                role: h.role,
+                parts: [{ text: h.parts[0].text }]
+            }))
+        };
     }
 };
 
-export const sendMessage = async (userMessage: string): Promise<string> => {
-    const response = await fetch(import.meta.env.VITE_GEMINI_API_URL, {
+export const initializeBotWithGreeting = async (): Promise<{ greeting: string; initialHistory: ConversationTurn[] }> => {
+    const { url, key, isGlm } = getProviderConfig();
+
+    const systemInstruction = BOT_PERSONALITY;
+    const modelAck = 'Understood. I will maintain this personality throughout our conversation. Do not introduce yourself, just the greeting. Now, as Sir Sarcasm, generate a single short, sharp, witty greeting. Do not use any markdown formatting.';
+
+    // Setup initial history objects
+    const setupHistory: ConversationTurn[] = [
+        { role: 'user', parts: [{ text: systemInstruction }] },
+        { role: 'model', parts: [{ text: modelAck }] },
+    ];
+
+    const response = await fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            ...(isGlm && { 'Authorization': `Bearer ${key}` }),
         },
-        body: JSON.stringify({
-            contents: [
-                {
-                    role: "user",
-                    parts: [{
-                        text: BOT_PERSONALITY
-                    }]
-                },
-                {
-                    role: "model",
-                    parts: [{
-                        text: "Understood. I will maintain this personality throughout our conversation."
-                    }]
-                },
-                {
-                    role: "user",
-                    parts: [{
-                        text: userMessage
-                    }]
-                }
-            ]
-        }),
+        body: JSON.stringify(formatPayload(isGlm, setupHistory)),
     });
 
-    if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`API Error: ${response.status} - ${errorText}`);
-    }
+    if (!response.ok) throw new Error(`Init failed: ${response.statusText}`);
 
-    const data = await response.json();
+    const data: UnifiedApiResponse = await response.json();
+    const greeting = cleanResponse(extractText(data));
 
-    let responseText = '';
-    if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-        responseText = data.candidates[0].content.parts[0].text;
-    } else if (data?.text) {
-        responseText = data.text;
-    } else if (typeof data === 'string') {
-        responseText = data;
-    } else {
-        throw new Error('Unexpected API response format');
-    }
+    const initialHistory: ConversationTurn[] = [
+        ...setupHistory,
+        { role: 'user', parts: [{ text: 'Generate a greeting.' }] },
+        { role: 'model', parts: [{ text: greeting }] },
+    ];
 
-    return cleanResponse(responseText);
-}; 
+    return { greeting, initialHistory };
+};
+
+export const sendMessage = async (userMessage: string, conversationHistory: ConversationTurn[]): Promise<string> => {
+    const { url, key, isGlm } = getProviderConfig();
+
+    const fullHistory = [
+        ...conversationHistory,
+        { role: 'user', parts: [{ text: userMessage }] } as ConversationTurn
+    ];
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            ...(isGlm && { 'Authorization': `Bearer ${key}` }),
+        },
+        body: JSON.stringify(formatPayload(isGlm, fullHistory)),
+    });
+
+    if (!response.ok) throw new Error('API request failed');
+
+    const data: UnifiedApiResponse = await response.json();
+    return cleanResponse(extractText(data));
+};
