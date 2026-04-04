@@ -45,6 +45,10 @@ export const getInitialPrompt = () => {
             parts: [{
                 text: BOT_PERSONALITY
             }]
-        }]
+        }],
+        "generationConfig": {
+            "temperature": 0.9,
+            "top_p": 1.0
+        }
     };
-}; 
+};
